@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>livros!</title>
+    <style>
+        a {
+            background-color: rgb(182, 182, 219);
+            color: rgb(4, 52, 93);
+            padding: 20px;
+            margin: 30px;
+            display: flex;
+            justify-content: center;
+        }
+        h1 {
+            color: darkblue;
+            font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+            text-align: center;
+        }
+        h2 {
+            color: rgb(82, 82, 158);
+            text-align: center;
+        }
+        input {
+            background-color: rgba(210, 210, 232, 0.842);
+            color: darkblue;
+        }
+        .flashes {
+            list-style-type: none;
+            padding: 0;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <h1>kams' bookstore!</h1>
+
+    <form action="/get-all-livros" method="POST">
+        <button type="submit">ver todos os livros</button>
+    </form>
+
+    {% with messages = get_flashed_messages(with_categories=True) %}
+        {% if messages %}
+            <ul class="flashes">
+            {% for category, message in messages %}
+                <li class="{{ category }}">{{ message }}</li>
+            {% endfor %}
+            </ul>
+        {% endif %}
+    {% endwith %}
+    
+    {% if all_livros %}
+    <div class="result">
+        <h2>abaixo está a lista com todo os livros e suas caracteristicas</h2>
+        <ul>
+            {% for livro in all_livros %}
+            <li>
+                id: {{ livro.id }} - título: {{ livro.titulo }} - ISBN: {{ livro.isbn }} - data de publicação: {{ livro.data_publi }} - número de páginas: {{ livro.num_pag }} - autor(es): {{ livro.autor_id }} - gênero literário: {{ livro.genero_id }}
+                <form action="{{ url_for('livrinhos.editar_livro', id=livro.id) }}" method="get" style="display:inline;">
+                    <button type="submit">editar</button>
+                </form>
+                <form action="{{ url_for('livrinhos.excluir_livro', id=livro.id) }}" method="post" style="display:inline;">
+                    <button type="submit">deletar</button>
+                </form>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+    {% endif %}
+
+    <div style="text-align:center;">
+        <a onclick="window.location.href='/criarlivro'">quer criar um livro? clique aqui!</a>
+    </div>
+
+    <h3>qual caminho você quer fazer agora?</h3>
+    <a onclick="window.location.href='/'"> voltar a pagina inicial</a>
+    <a onclick="window.location.href='/books'">livros</a>
+    <a onclick="window.location.href='/authors'">autores</a>
+    <a onclick="window.location.href='/categorias'">categorias/generos literários</a>
+</body>
+</html>

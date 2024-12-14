@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Autores</title>
+</head>
+<style>
+    a {
+        background-color: rgb(182, 182, 219);
+        color: rgb(4, 52, 93);
+        padding: 20px;
+        margin: 30px;
+        display: flex;
+        justify-content: center;
+    }
+    h1 {
+        color: darkblue;
+        font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+        text-align: center;
+    }
+    h2 {
+        color: rgb(82, 82, 158);
+        text-align: center;
+    }
+    h3{
+        color: rgb(82, 82, 158);
+        text-align: center;
+    }
+    input {
+        background-color: rgba(210, 210, 232, 0.842);
+        color: darkblue;
+    }
+    .flashes {
+        list-style-type: none;
+        padding: 0;
+        text-align: center;
+    }
+</style>
+<body>
+    <h1>kams' bookstore!</h1>
+
+    <!-- Buscar autor por ID -->
+    <form action="/get-autores" method="POST">
+        <label for="id">Deseja verificar qual autor corresponde a um ID? Digite-o abaixo:</label>
+        <input type="number" name="id" required>
+        <button type="submit">Verificar</button>
+    </form>
+
+    {% with messages = get_flashed_messages(with_categories=True) %}
+        {% if messages %}
+            <ul class="flashes">
+            {% for category, message in messages %}
+                <li class="{{ category }}">{{ message }}</li>
+            {% endfor %}
+            </ul>
+        {% endif %}
+    {% endwith %}
+
+    <!-- Listar todos os autores -->
+    <form action="/get-all-autores" method="POST">
+        <label for="all">Deseja verificar todos os autores e seus IDs correspondentes? Clique no botão abaixo:</label>
+        <input type="submit" name="all_autores">
+    </form>
+
+    {% if all_autores %}
+    <div class="result">
+        <h2>Aqui está uma lista com todos os autores!</h2>
+        <ul>
+            {% for autor in all_autores %}
+            <li>
+                id: {{ autor.id }} - Nome: {{ autor.nome }} - Nacionalidade: {{ autor.nacionalidade }} - Data de Nascimento: {{ autor.data_nasci }}
+                <form action="{{ url_for('autores.editar_autor', id=autor.id) }}" method="post" style="display:inline;">
+                    <input type="text" name="nome" placeholder="Novo nome" required>
+                    <input type="date" name="data_nasci" required>
+                    <input type="text" name="nacionalidade" placeholder="Nova nacionalidade" required>
+                    <button type="submit">Editar</button>
+                </form>
+                <form action="{{ url_for('autores.excluir_autor', id=autor.id) }}" method="post" style="display:inline;">
+                    <button type="submit">Excluir</button>
+                </form>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+{% endif %}
+
+    <!-- Criar novo autor -->
+    <form action="/criar-autor" method="POST">
+        <label for="nome">Nome do autor:</label>
+        <input type="text" name="nome" required>
+        <label for="data_nasci">Data de nascimento:</label>
+        <input type="date" name="data_nasci" required>
+        <label for="nacionalidade">Nacionalidade:</label>
+        <input type="text" name="nacionalidade" required>
+        <button type="submit">Criar autor</button>
+    </form>
+
+    <h3>qual caminho você quer fazer agora?</h3>
+    <a onclick="window.location.href='/'"> voltar a pagina inicial</a>
+    <a onclick="window.location.href='/books'">livros</a>
+    <a onclick="window.location.href='/authors'">autores</a>
+    <a onclick="window.location.href='/categorias'">categorias/generos literários</a>
+</body>
+</html>

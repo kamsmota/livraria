@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>categorias!</title>
+</head>
+<style>
+a{
+    background-color: rgb(182, 182, 219);
+    color:rgb(4, 52, 93);
+    padding: 20px;
+    margin:30px;
+    display: flex;
+    justify-content: center;
+}
+h1{
+    color: darkblue;
+    font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+    text-align: center;
+}
+h2{
+    color:rgb(82, 82, 158);
+    text-align: center;
+}
+input{
+    background-color: rgba(210, 210, 232, 0.842);
+    color: darkblue;
+}
+.flashes {
+    list-style-type: none;
+    padding: 0;
+    text-align: center;
+}
+</style>
+<body>
+    <h1>kams' bookstore!</h1>
+    <form action="/get-generos" method="POST">
+        <label for="id">deseja verificar qual categoria corresponde a um ID? digite-o abaixo!</label>
+        <input type="number" name="id" required>
+        <button type="submit">verificar</button>
+    </form>
+
+    {% with messages = get_flashed_messages(with_categories=True) %}
+        {% if messages %}
+            <ul class="flashes">
+            {% for category, message in messages %}
+                <li class="{{ category }}">{{ message }}</li>
+            {% endfor %}
+            </ul>
+        {% endif %}
+    {% endwith %}
+
+    <form action="/get-all-generos" method="POST">
+        <label for="all">deseja verificar todas as categorias e seus IDs correspondentes? clique no botão abaixo:</label>
+        <input type="submit" name="all_generos">
+    </form>
+
+    {% if all_generos %}
+    <div class="result">
+        <h2>here's a list with all the categories we have!</h2>
+        <ul>
+            {% for genero in all_generos %}
+            <li>
+                id: {{ genero.id }} - gênero literário: {{ genero.tipo }}
+                <form action="{{ url_for('generos.editar_categoria', id=genero.id) }}" method="post" style="display:inline;">
+                    <input type="text" name="gener" placeholder="digite aqui o novo gênero" required>
+                    <button type="submit">editar</button>
+                </form>
+                <form action="{{ url_for('generos.excluir_categoria', id=genero.id) }}" method="post" style="display:inline;">
+                    <button type="submit">deletar</button>
+                </form>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+{% endif %}
+
+    <form action="/criar-genero" method="POST">
+        <label for="tipo">deseja criar umo novo gênero literário? digite o tipo abaixo:</label>
+        <input type="text" name="tipo" required>
+        <button type="submit">criar gênero literário!</button>
+    </form>
+
+    {% if gener %}
+        <div class="result">
+            <h2>novo gênero criado:</h2>
+            <p>ID: {{ gener.id }}</p>
+            <p>Categoria: {{ gener.tipo }}</p>
+        </div>
+    {% endif %}
+
+
+
+
+    <h3>qual caminho você quer fazer agora?</h3>
+    <a onclick="window.location.href='/'"> voltar a pagina inicial</a>
+    <a onclick="window.location.href='/books'">livros</a>
+    <a onclick="window.location.href='/authors'">autores</a>
+    <a onclick="window.location.href='/categorias'">categorias/generos literários</a>
+</body>
+</html>
